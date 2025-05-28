@@ -24,6 +24,16 @@ nx.draw(G, with_labels=True, node_color='lightpink', font_size=12, node_size=200
 plt.title("Social Network Graph")
 plt.show()
 
+plt.axis('off')
+nx.draw_networkx(G,
+                 pos=nx.spring_layout(G, seed=0),
+                 node_size=600,
+                 cmap='coolwarm',
+                 font_size=6,
+                 font_color='white'
+                 )
+
+
 
 ## GNN example
 
