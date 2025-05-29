@@ -2,8 +2,8 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 ## Basic graph representation
-# reference: https://jaylala.tistory.com/entry/%EA%B0%9C%EB%85%90%EC%A0%95%EB%A6%AC-%EA%B7%B8%EB%9E%98%ED%94%84-%EC%8B%A0%EA%B2%BD%EB%A7%9DGraph-Neural-Network-GNN-1
 
+## Undirected graph
 # Create a graph
 G = nx.Graph()
 
@@ -19,11 +19,6 @@ G.add_node("Coin")
 G.add_edges_from([("Yubin", "Youngho"), ("Yubin", "Yumin"), ("Yubin", "Woojeong"), ("Yubin", "Rey"), ("Youngho", "Coin"), ("Yumin", "Woojeong"), ("Yumin", "Rey")])
 
 # Make a plot
-plt.figure(figsize=(5, 5))
-nx.draw(G, with_labels=True, node_color='lightpink', font_size=12, node_size=2000)
-plt.title("Social Network Graph")
-plt.show()
-
 plt.axis('off')
 nx.draw_networkx(G,
                  pos=nx.spring_layout(G, seed=0),
@@ -33,6 +28,21 @@ nx.draw_networkx(G,
                  font_color='white'
                  )
 
+
+## Directed graph
+# Create a graph
+DG = nx.DiGraph() 
+DG.add_edges_from([("Yubin", "Youngho"), ("Yubin", "Yumin"), ("Yubin", "Woojeong"), ("Yubin", "Rey"), ("Youngho", "Coin"), ("Yumin", "Woojeong"), ("Yumin", "Rey")])
+
+# Make a plot
+plt.axis('off')
+nx.draw_networkx(DG,
+                 pos=nx.spring_layout(G, seed=0),
+                 node_size=600,
+                 cmap='coolwarm',
+                 font_size=6,
+                 font_color='white'
+                 )
 
 
 ## GNN example
