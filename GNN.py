@@ -92,6 +92,7 @@ import matplotlib.pyplot as plt
 from urllib.request import urlopen
 from collections import defaultdict
 
+# source: https://ysg2997.tistory.com/27?category=650584
 # Download and extract the MovieLens 100k dataset
 url = 'https://files.grouplens.org/datasets/movielens/ml-100k.zip'
 with urlopen(url) as zurl:
