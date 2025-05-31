@@ -82,6 +82,7 @@ def plot_graph_structure_detailed():
 
 
 
+## Example of movie recommendation
 
 import pandas as pd
 import networkx as nx
@@ -135,3 +136,43 @@ for pair in pairs:
 # Print the total number of nodes and edges in the graph
 print("Total number of graph nodes:", G.number_of_nodes())
 print("Total number of graph edges:", G.number_of_edges())
+
+"""
+# Initialize Node2Vec on graph G with specified parameters
+# dimensions: size of embedding vectors
+# walk_length: length of each random walk
+# num_walks: number of walks per node
+# p, q: Node2Vec hyperparameters controlling the walk behavior
+# workers: number of parallel processes
+"""
+node2vec = Node2Vec(G, dimensions=64, walk_length=20, num_walks=200, p=2, q=1, workers=1)
+
+"""
+# Fit the Node2Vec model to generate embeddings
+# window: context window size for Word2Vec
+# min_count: minimum count of nodes to consider
+# batch_words: number of words to process in each batch
+"""
+model = node2vec.fit(window=10, min_count=1, batch_words=4)
+
+# Function to recommend similar movies
+def recommend(movie):
+    # Get the movie_id corresponding to the input movie title
+    movie_id = str(movies[movies.title == movie].movie_id.values[0])
+
+    # Find top 5 most similar movies based on vector similarity
+    for id in model.wv.most_similar(movie_id)[:5]:
+        # Get the movie title corresponding to the recommended movie_id
+        title = movies[movies.movie_id == int(id[0])].title.values[0]
+        # Print the recommended movie title and its similarity score
+        print(f'{title}: {id[1]:.2f}')
+
+# Call the recommend function for the movie 'Star Wars (1977)'
+recommend('Star Wars (1977)')
+"""
+Return of the Jedi (1983): 0.61
+Raiders of the Lost Ark (1981): 0.56
+Monty Python and the Holy Grail (1974): 0.51
+Toy Story (1995): 0.44
+Terminator 2: Judgment Day (1991): 0.44
+"""
