@@ -4,7 +4,7 @@ import matplotlib.pylab as plt
 """
 Functions
 """
-# Step function 1
+# Step function (1)
 # x must be a real number (float)
 def step_function(x):
   if x > 0:
@@ -12,7 +12,7 @@ def step_function(x):
   else:
     return 0
 
-# Step function 2
+# Step function (2)
 # supports NumPy arrays
 def step_function(x):
   y = x > 0
