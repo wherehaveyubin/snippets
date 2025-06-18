@@ -9,7 +9,7 @@ from mnist import *
 
 """
 def load_mnist(normalize=True, flatten=True, one_hot_label=False):
-    """Import MNIST data
+    '''Import MNIST data
     Parameters
     ----------
     normalize : Whether to normalize image pixel values to the range
@@ -23,7 +23,7 @@ def load_mnist(normalize=True, flatten=True, one_hot_label=False):
     Returns
     -------
     (train_images, train_labels), (test_images, test_labels)
-    """
+    '''
     if not os.path.exists(save_file):
         init_mnist()
         
