@@ -1,6 +1,9 @@
 import numpy as np
 
-# Basic perceptron 
+"""
+1.3.1 Basic perceptron 
+"""
+# AND gate
 def AND(x1, x2):
     w1, w2, theta = 0.5, 0.5, 0.7
     tmp = x1*w1 + x2*w2
@@ -12,7 +15,10 @@ def AND(x1, x2):
 print (AND(0, 0)) # 0
 print (AND(1, 1)) # 1
 
-# Perceptron with weight and bias
+
+"""
+1.3.3 Perceptron with weight and bias
+"""
 # AND gate
 def AND(x1, x2):
     x = np.array([x1, x2])
@@ -49,8 +55,11 @@ def OR(x1, x2):
     else:
         return 1
 
-# XOR gate
-# using NAND, OR, AND
+
+"""
+1.5.2 XOR gate
+"""
+# XOR gate using NAND, OR, AND
 def XOR(x1, x2):
   s1 = NAND(x1, x2)
   s2 = OR(x1, x2)
