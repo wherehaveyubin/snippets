@@ -98,7 +98,24 @@ print("dTax:", dtax) # 650
 """
 4.5.1 ReLU layer
 """
-# Mask 
+class Relu:
+    def __init__(self):
+        self.mask = None
+
+    def forward(self, x):
+        self.mask = (x <= 0)
+        out = x.copy()
+        out[self.mask] = 0
+
+        return out
+
+    def backward(self, dout):
+        dout[self.mask] = 0
+        dx = dout
+
+        return dx
+        
+# Mask
 x = np.array([[1.0, -0.5], [-2.0, 3.0]])
 '''
 [[ 1.  -0.5]
@@ -133,11 +150,88 @@ class Sigmoid:
 4.6.1 Affine layer
 """
 # Example
-X = np.random.rand(2) # 입력 array([0.71101479, 0.87477799])
-W = np.random.rand(2,3) # 가중치 array([[0.13691532, 0.86736043, 0.83357747],
-                        #              [0.79764694, 0.95760272, 0.53444365]])
-B = np.random.rand(3) # 편향 array([0.61461436, 0.31099111, 0.17659224])
+X = np.random.rand(2) # Input
+W = np.random.rand(2,3) # Weight
+B = np.random.rand(3) # Bias
 
 X.shape # (2,)
 W.shape # (2, 3)
 B.shape # (3,)
+
+class Affine:
+    def __init__(self, W, b):
+        self.W = W
+        self.b = b
+        
+        self.x = None
+        self.original_x_shape = None
+        self.dW = None
+        self.db = None
+
+    def forward(self, x):
+        self.original_x_shape = x.shape
+        x = x.reshape(x.shape[0], -1)
+        self.x = x
+
+        out = np.dot(self.x, self.W) + self.b
+
+        return out
+
+    def backward(self, dout):
+        dx = np.dot(dout, self.W.T)
+        self.dW = np.dot(self.x.T, dout)
+        self.db = np.sum(dout, axis=0)
+        
+        dx = dx.reshape(*self.original_x_shape)
+        return dx
+
+
+"""
+4.6.3 Softmax with loss
+"""
+class SoftmaxWithLoss:
+    def __init__(self):
+        self.loss = None  # Loss function
+        self.y = None     # Output of softmax
+        self.t = None     # Correct labels (in one-hot encoded form)
+        
+    def forward(self, x, t):
+        self.t = t
+        self.y = softmax(x)
+        self.loss = cross_entropy_error(self.y, self.t)
+        
+        return self.loss
+
+    def backward(self, dout=1):
+        batch_size = self.t.shape[0]
+        if self.t.size == self.y.size:  # When correct labels are in one-hot encoded form
+            dx = (self.y - self.t) / batch_size
+        else:
+            dx = self.y.copy()
+            dx[np.arange(batch_size), self.t] -= 1
+            dx = dx / batch_size
+        
+        return dx
+
+"""
+4.7.3 Gradient check
+"""
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+import numpy as np
+from dataset.mnist import load_mnist
+from two_layer_net import TwoLayerNet
+
+(x_train, t_train), (x_test, t_test) = load_mnist(normalize=True, one_hot_label=True)
+
+network = TwoLayerNet(input_size=784, hidden_size=50, output_size=10)
+
+x_batch = x_train[:3]
+t_batch = t_train[:3]
+
+grad_numerical = network.numerical_gradient(x_batch, t_batch)
+grad_backprop = network.gradient(x_batch, t_batch)
+
+for key in grad_numerical.keys():
+    diff = np.average( np.abs(grad_backprop[key] - grad_numerical[key]) )
+    print(key + ":" + str(diff))
