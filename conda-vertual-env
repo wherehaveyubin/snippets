@@ -1,0 +1,2 @@
+conda create -n heat python=3.11 anaconda
+conda activate heat
