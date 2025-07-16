@@ -112,7 +112,6 @@ from collections import OrderedDict
 from common.layers import *
 from common.gradient import numerical_gradient
 
-
 class SimpleConvNet:
     """Simple Convolutional Neural Network
     
