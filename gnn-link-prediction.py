@@ -101,3 +101,43 @@ class GCNEncoder(torch.nn.Module):
 def decode(z, edge_index):
     return (z[edge_index[0]] * z[edge_index[1]]).sum(dim=1)
 
+# ================================
+# 4. Train the Model
+# ================================
+
+# Use GPU if available
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+# Define the GCN model that produces 64-dimensional embeddings
+model = GCNEncoder(dataset.num_features, 64).to(device)
+# Move node features to the device
+x = train_data.x.to(device)
+# Move positive training edge index to the device
+train_pos_edge_index = train_data.pos_edge_label_index.to(device)
+# Set the optimizer (Adam) with learning rate 0.01
+optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+
+def train():
+    model.train() # Set model to training mode
+    optimizer.zero_grad() # Reset gradients before backpropagation
+    
+    # Use train_data, create node embedding
+    z = model(train_data.x.to(device), train_data.edge_index.to(device))
+
+    # Predict on positive (connected) edges
+    pos_edge_index = train_data.pos_edge_label_index.to(device)
+    pos_pred = decode(z, pos_edge_index)
+    pos_label = torch.ones(pos_pred.size(0), device=device) # Create label 1 for all positive samples
+
+    # Predict on negative (not connected) edges
+    neg_edge_index = train_data.neg_edge_label_index.to(device)
+    neg_pred = decode(z, neg_edge_index)
+    neg_label = torch.zeros(neg_pred.size(0), device=device) # Create label 0 for all negative samples
+
+    # Compute loss between predictions and labels
+    pred = torch.cat([pos_pred, neg_pred], dim=0)
+    label = torch.cat([pos_label, neg_label], dim=0)
+    loss = F.binary_cross_entropy_with_logits(pred, label)
+
+    loss.backward() # Backpropagate to compute gradients
+    optimizer.step() # Update model weights using gradients
+    return loss # Return the training loss for monitoring
