@@ -141,3 +141,36 @@ def train():
     loss.backward() # Backpropagate to compute gradients
     optimizer.step() # Update model weights using gradients
     return loss # Return the training loss for monitoring
+
+# ================================
+# 5. Evaluate the Model
+# ================================
+
+@torch.no_grad()  # Don't track gradients during evaluation (for speed & memory)
+
+def test():
+    model.eval()  # Set model to evaluation mode
+
+    with torch.no_grad():  # Again, disable gradient tracking
+        # Compute node embeddings using trained model
+        z = model(x, train_pos_edge_index) 
+        
+        # Predict scores for positive test edges (edges that actually exist)
+        pos_pred = decode(z, test_data.pos_edge_label_index.to(device))
+        
+        # Predict scores for negative test edges (non-existing edges)
+        neg_pred = decode(z, test_data.neg_edge_label_index.to(device))
+
+        # Combine both positive and negative predictions into one tensor
+        pred = torch.cat([pos_pred, neg_pred], dim=0)
+
+        # Create ground-truth labels: 1 for positive, 0 for negative
+        label = torch.cat([
+            torch.ones(pos_pred.size(0)),
+            torch.zeros(neg_pred.size(0))
+        ]).to(device)
+
+        # Classify predictions: if predicted score > 0, predict "link exists"
+        acc = ((pred > 0).float() == label).sum() / label.size(0)
+
+        return acc.item()
