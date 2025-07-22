@@ -174,3 +174,25 @@ def test():
         acc = ((pred > 0).float() == label).sum() / label.size(0)
 
         return acc.item()
+
+# ================================
+# 6. Run Training
+# ================================
+
+for epoch in range(1, 201): # Loop over 200 training epochs
+    loss = train()
+    if epoch % 20 == 0: # Every 20 epochs, evaluate the model
+        acc = test() # Evaluate link prediction accuracy
+        print(f'Epoch {epoch:03d}, Loss: {loss:.4f}, Test Acc: {acc:.4f}')
+       
+"""
+Epoch 020, Loss: 0.4149, Test Acc: 0.7265
+Epoch 040, Loss: 0.2013, Test Acc: 0.6867
+Epoch 060, Loss: 0.0424, Test Acc: 0.6749
+Epoch 080, Loss: 0.0044, Test Acc: 0.6730
+Epoch 100, Loss: 0.0009, Test Acc: 0.6697
+Epoch 120, Loss: 0.0004, Test Acc: 0.6716
+Epoch 140, Loss: 0.0003, Test Acc: 0.6687
+Epoch 160, Loss: 0.0002, Test Acc: 0.6668
+Epoch 180, Loss: 0.0002, Test Acc: 0.6654
+Epoch 200, Loss: 0.0001, Test Acc: 0.6654
