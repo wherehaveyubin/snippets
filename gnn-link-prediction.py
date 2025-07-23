@@ -196,3 +196,48 @@ Epoch 140, Loss: 0.0003, Test Acc: 0.6687
 Epoch 160, Loss: 0.0002, Test Acc: 0.6668
 Epoch 180, Loss: 0.0002, Test Acc: 0.6654
 Epoch 200, Loss: 0.0001, Test Acc: 0.6654
+"""
+
+# =============================================
+# 7. Extract Top-N Link Prediction Results
+# =============================================
+
+# Compute node embeddings from the trained GCN model
+model.eval()  # Set model to evaluation mode
+with torch.no_grad():  # Disable gradient tracking (for efficiency)
+    z = model(x, train_pos_edge_index)  # Generate embeddings for each node
+
+# Compute prediction scores for all test edges
+# These scores indicate how likely a link exists between each node pair
+pred_scores = decode(z, test_data.pos_edge_label_index.to(device))
+
+# Select the top-N predicted links based on the highest scores
+# In this case, we choose the top 10
+topk = torch.topk(pred_scores, k=10)
+
+# Move the indices to CPU for further processing (if model was on GPU)
+top_indices = topk.indices.cpu()
+
+# Retrieve the corresponding node pairs (edges) from the test set
+# Shape: [2, 10] → each column represents a (source, target) node pair
+top_edge_indices = test_data.pos_edge_label_index[:, top_indices]
+
+# Move the predicted scores of the top edges to CPU
+top_scores = topk.values.cpu()
+
+# Format and display the top predicted links
+import pandas as pd
+from IPython.display import display
+
+# Convert the top edge tensor into a NumPy array of shape [10, 2]
+top_edges_np = top_edge_indices.T.numpy()
+
+# Create a DataFrame to neatly display the results
+df_top_links = pd.DataFrame({
+    'Source Node': top_edges_np[:, 0],        # First node of the edge
+    'Target Node': top_edges_np[:, 1],        # Second node of the edge
+    'Predicted Score': top_scores.numpy()     # Link strength (dot product)
+})
+
+# Display the resulting DataFrame in notebook
+display(df_top_links)
