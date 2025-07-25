@@ -274,3 +274,36 @@ display(df_existence_check)
 8 	1136 	2359 	True
 9 	998 	1431 	True
 """
+
+# ================================
+# 9. Visualize Graph
+# ================================
+import networkx as nx
+import matplotlib.pyplot as plt
+
+# Create a graph and add the predicted edges
+G = nx.Graph()
+G.add_edges_from(predicted_edges)
+
+# Create a subgraph that only contains nodes involved in the predictions
+H = G.subgraph(set(sum(predicted_edges, ())))  # flatten node list
+
+# Generate layout (spring_layout is stable and fast)
+pos = nx.spring_layout(H, seed=42)
+
+# Plot settings
+plt.figure(figsize=(8, 6))
+nx.draw(
+    H, pos,
+    with_labels=True,
+    node_color='#ffc0cb',
+    node_size=700,
+    edge_color='black',
+    width=2
+)
+plt.title("Top 10 Predicted Links", fontsize=14)
+plt.axis("off")
+plt.tight_layout()
+
+# Show the plot
+plt.show()
