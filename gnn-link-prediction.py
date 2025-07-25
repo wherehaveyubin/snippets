@@ -241,3 +241,36 @@ df_top_links = pd.DataFrame({
 
 # Display the resulting DataFrame in notebook
 display(df_top_links)
+
+# ================================
+# 8. Top 10 predicted links
+# ================================
+# top_edge_indices shape: [2, 10]
+top_edges_set = set(tuple(sorted(edge)) for edge in top_edge_indices.T.cpu().numpy())
+
+# All ground-truth positive test edges
+real_edges_set = set(tuple(sorted(edge)) for edge in test_data.pos_edge_label_index.T.cpu().numpy())
+
+# Compare: Does each predicted link actually exist in the test set?
+results = []
+for edge in top_edges_set:
+    exists = edge in real_edges_set
+    results.append({'Source Node': edge[0], 'Target Node': edge[1], 'Actually Exists': exists})
+
+# Create a DataFrame for display
+df_existence_check = pd.DataFrame(results)
+display(df_existence_check)
+
+"""
+		‌Source Node 	Target Node 	Actually Exists
+0 	1093 	2367 	True
+1 	1154 	1358 	True
+2 	2075 	2667 	True
+3 	831 	1011 	True
+4 	99 	  2455 	True
+5 	2289 	2464 	True
+6 	446 	1507 	True
+7 	2075 	2668 	True
+8 	1136 	2359 	True
+9 	998 	1431 	True
+"""
