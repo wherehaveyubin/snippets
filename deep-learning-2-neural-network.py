@@ -35,7 +35,7 @@ plt.ylim(-0.1, 1.1) # Set y-axis range
 plt.show()
 
 """
-Sigmoid function
+2.2.2 Sigmoid function
 """
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
@@ -59,7 +59,7 @@ plt.ylim(-0.1, 1.1)
 plt.show()
 
 """
-ReLU function
+2.2.4 ReLU function
 """
 def relu(x):
     return np.maximum(0, x) # Return the greater of the two
@@ -72,7 +72,7 @@ plt.show()
 
       
 """
-Multi-dimension
+2.3.1 Multi-dimension
 """
 # Understanding matrix
 A = np.array([1, 2, 3, 4])
@@ -116,7 +116,7 @@ print(Y) # [ 5 11 17]
 
       
 """
-Three-layer neural network
+2.4 Three-layer neural network
 """
 # Zero layer to First layer
 X = np.array([1.0, 0.5])
@@ -179,7 +179,7 @@ print(y) # [0.31682708 0.69627909]
 
     
 """
-Softmax function
+2.5 Softmax function
 """
 # Basic softmax function
 def softmax(a):
