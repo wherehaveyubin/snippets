@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pylab as plt
 
 """
-Functions
+2.2.1 Step functions
 """
 # Step function (1)
 # x must be a real number (float)
@@ -34,7 +34,9 @@ plt.plot(X, Y)
 plt.ylim(-0.1, 1.1) # Set y-axis range
 plt.show()
 
-# Sigmoid function
+"""
+Sigmoid function
+"""
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 x = np.array([-1.0, 1.0, 2.0])
@@ -56,7 +58,9 @@ plt.plot(x, y2, 'k--')
 plt.ylim(-0.1, 1.1)
 plt.show()
 
-# ReLU function
+"""
+ReLU function
+"""
 def relu(x):
     return np.maximum(0, x) # Return the greater of the two
 
@@ -68,7 +72,7 @@ plt.show()
 
       
 """
-## Multi-dimension
+Multi-dimension
 """
 # Understanding matrix
 A = np.array([1, 2, 3, 4])
